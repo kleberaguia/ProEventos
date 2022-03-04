@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ProEventos.API.Data;
 using ProEventos.API.Models;
 
 namespace ProEventos.API.Controllers
@@ -12,7 +13,7 @@ namespace ProEventos.API.Controllers
     [Route("[controller]")]
     public class EventoController : ControllerBase
     {
-    public IEnumerable<Evento> evento =  new Evento[]{
+        public IEnumerable<Evento> evento = new Evento[]{
              new Evento(){
             EventoId = 1,
             Tema = "Angular 11 e .Net 5",
@@ -33,40 +34,42 @@ namespace ProEventos.API.Controllers
         }
     };
 
-        public EventoController()
+        public DataContext _Context { get; }
+
+        public EventoController(DataContext context)
         {
-            
+            _Context = context;
         }
 
         [HttpGet]
         public IEnumerable<Evento> Get()
         {
-           return evento;
+            return _Context.Eventos ;
         }
 
         [HttpGet("{id}")]
-        public IEnumerable<Evento> GetById(int id)
+        public Evento GetById(int id)
         {
-           return evento.Where(e => e.EventoId == id);
+            return _Context.Eventos.FirstOrDefault(e => e.EventoId == id);
         }
 
-         [HttpPost]
+        [HttpPost]
         public string Post()
         {
-           return "Exemplo de post";
-        }
-         
-         [HttpPut("{id}")]
-        public string Put(int id)
-        {
-           return $"Exemplo de put com id =  {id}";
+            return "Exemplo de post";
         }
 
-         [HttpDelete("{id}")]
+        [HttpPut("{id}")]
+        public string Put(int id)
+        {
+            return $"Exemplo de put com id =  {id}";
+        }
+
+        [HttpDelete("{id}")]
         public string Delete(int id)
         {
-           return $"Exemplo de Delete com id = {id}";
-           ;
+            return $"Exemplo de Delete com id = {id}";
+            ;
         }
     }
 }
